@@ -1,0 +1,1 @@
+This builds a Docker image that extends `ipython/scipystack` with PostgreSQL + PostGIS.
