@@ -1,4 +1,4 @@
-FROM ipython/scipystack_pg
+FROM royseto/scipystack_pg
 
 MAINTAINER roy.seto@gmail.com
 
@@ -7,17 +7,19 @@ WORKDIR /notebooks
 
 EXPOSE 8888
 
-# TODO: Add and switch to a dev user here
-
 # You can mount your own SSL certs as necessary here
-ENV PEM_FILE /key.pem
 # $PASSWORD will get `unset` within notebook.sh, turned into an IPython style hash
-ENV PASSWORD Dont make this your default
-ENV USE_HTTP 0
-ENV LD_LIBRARY_PATH /usr/local/pgsql/lib
-ENV PATH /usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PEM_FILE=/key.pem \
+    PASSWORD="Dont make this your default" \
+    USE_HTTP=0 \
+    LD_LIBRARY_PATH=/usr/local/pgsql/lib \
+    PATH=/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+RUN useradd dev -u 1000 -c "developer account" -d /home/dev -s /bin/bash -g users -G sudo --no-create-home
+RUN mkdir -p /home/dev && /bin/chown dev:users /home/dev
 ADD notebook.sh /
-RUN chmod u+x /notebook.sh
+RUN chown dev:users /notebook.sh && chmod u+x /notebook.sh
+
+USER dev
 
 CMD ["/notebook.sh"]
