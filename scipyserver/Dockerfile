@@ -18,7 +18,7 @@ ENV PEM_FILE=/key.pem \
 RUN useradd dev -u 1000 -c "developer account" -d /home/dev -s /bin/bash -g users -G sudo --no-create-home
 RUN mkdir -p /home/dev && /bin/chown dev:users /home/dev
 ADD notebook.sh /
-RUN chown dev:users /notebook.sh && chmod u+x /notebook.sh
+RUN chown dev:users /notebook.sh /key.pem && chmod u+x /notebook.sh
 
 USER dev
 
